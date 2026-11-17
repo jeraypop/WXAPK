@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.twiceyuan.wxapk"
-        minSdk = 23
-        targetSdk = 36
-        namespace = "com.twiceyuan.wxapk"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        namespace = "com.twiceyuan.wxapk.demo"
         versionCode = getAppVersionCode()
         versionName = getLastTagName()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,9 @@ android {
 
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("release")
+            // 本地跑 demo 时用系统默认 debug keystore。
+            // 原来这里指向 release 签名，而 release 签名依赖 WXAPK_KEYSTORE 环境变量，
+            // 变量缺失时会 fallback 成 /dev/null（Windows 下是 app/dev/null）导致打包直接失败。
         }
         getByName("release") {
             isMinifyEnabled = true
@@ -109,4 +111,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.core)
+    // apk.1 安装能力全部来自 :lib（InstallerActivity / Provider / 安装进程判断）
+    implementation(project(":lib"))
 }

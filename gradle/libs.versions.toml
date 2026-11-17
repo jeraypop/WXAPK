@@ -1,4 +1,8 @@
 [versions]
+# SDK 平台的唯一出处，app 与 lib 都引用这里
+compileSdk = "36"
+minSdk = "23"
+targetSdk = "36"
 agp = "9.2.1"
 kotlin = "2.4.0"
 core = "1.17.0"
@@ -6,6 +10,7 @@ documentfile = "1.1.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]

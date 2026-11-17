@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 以下字符串被库内 Activity 直接引用，宿主无需再声明 -->
+    <string name="wxapk_installer_label">安装 APK</string>
+    <string name="storage_permission_denied_tip">在低版本上需要存储权限才能正常使用</string>
+    <string name="already_root_dir">已经是根目录</string>
+    <string name="prompt_choose_apk_dir">请授权读取 apk.1 文件目录，一般是 WeiXin 或 WeChat</string>
+    <string name="not_support_file">不支持的文件格式</string>
+</resources>

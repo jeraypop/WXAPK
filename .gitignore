@@ -1,7 +1,10 @@
 *.iml
 .gradle
+.kotlin
 /local.properties
 /.idea
+# 由 updateDaemonJvm 任务按本机环境生成
+gradle/gradle-daemon-jvm.properties
 .DS_Store
 /build
 /captures

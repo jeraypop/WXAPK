@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- apk.1 安装器只需要 temp_apk 这一个目录，不要放开整盘 -->
+<paths>
+    <external-files-path
+        name="temp_apk"
+        path="temp_apk" />
+</paths>

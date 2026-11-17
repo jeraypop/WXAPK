@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.TypedValue
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -44,7 +45,11 @@ class FileBrowserActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.enableEdgeToEdge(window)
+        // WindowCompat.enableEdgeToEdge 是 androidx.core 1.17.0 才有的静态方法。
+        // 本库打成 AAR 后不会传递依赖，宿主自己的 core 版本可能更低（实测 1.16.0），
+        // 直接调用会抛 NoSuchMethodError（属于 Error 而非 Exception，普通 catch 拦不住），
+        // 表现为「点文件管理直接闪退」。这里容错：拿不到就跳过边缘延伸，不影响功能。
+        runCatching { WindowCompat.enableEdgeToEdge(window) }
         setupListView()
         handleInitialUri()
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -61,6 +66,12 @@ class FileBrowserActivity : Activity() {
     private fun setupListView() {
         listView = ListView(this)
         listView.fitsSystemWindows = true
+        // 列表为空（还没选目录）时如果背景透明，宿主遇到深色主题（如 Theme.DeviceDefault）
+        // 会呈现整屏漆黑，容易被当成崩溃。这里跟随主题背景色，深浅色都正常。
+        val tv = TypedValue()
+        if (theme.resolveAttribute(android.R.attr.colorBackground, tv, true)) {
+            listView.setBackgroundColor(tv.data)
+        }
         setContentView(listView)
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fileNames)
         listView.adapter = adapter

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 拉起系统安装界面需要；宿主如果不想要，可以在自己的 manifest 里用 tools:node="remove" 覆盖 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:ignore="RequestInstallPackagesPolicy" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <application>
+
+        <!--
+          apk.1 安装器。
+          authority / taskAffinity 用 ${applicationId} 占位，保证多个宿主之间不冲突。
+
+          ⚠️ 宿主若把该 Activity 放在独立进程（android:process=":service"），
+          别忘了在宿主 Application.onCreate 里做进程判断早退（见 InstallProcess），
+          否则该进程会跑完整业务初始化、连带初始化 XpqAcc 而崩溃。
+        -->
+        <activity
+            android:name="com.twiceyuan.wxapk.InstallerActivity"
+            android:exported="true"
+            android:label="@string/wxapk_installer_label"
+            android:taskAffinity="${applicationId}.wxapk.installer"
+            android:excludeFromRecents="true"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:mimeType="*/apk.1" />
+                <data android:mimeType="*/apk.1.1" />
+                <data android:mimeType="*/apk.1.1.1" />
+                <data android:mimeType="*/apk.1.1.1.1" />
+                <data android:mimeType="*/apk.1.1.1.1.1" />
+                <data android:mimeType="application/apk.1" />
+                <data android:mimeType="application/apk.1.1" />
+                <data android:mimeType="application/apk.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1.1" />
+                <data android:scheme="content" />
+                <data android:host="*" />
+            </intent-filter>
+
+            <!-- QQ / 部分 ROM 走 content:// + application/octet-stream + pathSuffix -->
+            <intent-filter tools:targetApi="s">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:host="*" />
+                <data android:pathSuffix=".apk.1" />
+                <data android:pathSuffix=".apk.1.1" />
+                <data android:pathSuffix=".apk.1.1.1" />
+                <data android:pathSuffix=".apk.1.1.1.1" />
+                <data android:pathSuffix=".apk.1.1.1.1.1" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.twiceyuan.wxapk.FileBrowserActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="com.twiceyuan.wxapk.AppFileProvider"
+            android:authorities="${applicationId}.AppFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/wxapk_file_paths" />
+        </provider>
+
+    </application>
+
+</manifest>

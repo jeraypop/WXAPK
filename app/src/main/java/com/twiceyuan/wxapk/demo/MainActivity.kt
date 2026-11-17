@@ -1,4 +1,4 @@
-package com.twiceyuan.wxapk
+package com.twiceyuan.wxapk.demo
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -9,6 +9,9 @@ import android.text.format.Formatter
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.WindowCompat
+import com.twiceyuan.wxapk.FileBrowserActivity
+import com.twiceyuan.wxapk.InstallerActivity
+import com.twiceyuan.wxapk.toast
 import java.io.File
 
 open class MainActivity : Activity() {
